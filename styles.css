@@ -62,10 +62,14 @@
   padding: 5px;
   margin: 5px;
 }
-
+.dieface {
+  display: inline-block;
+  background-color: red;
+}
 #dieroll {
   color: white;
-  font-family: cursive;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
   margin: 10px;
   display: inline-block;
 }
