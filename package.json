@@ -1,0 +1,14 @@
+{
+  "name": "dicechess",
+  "version": "1.0.0",
+  "description": "A variant of the OG Chess game with luck integrated",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Dinesh Goswami",
+  "license": "ISC",
+  "dependencies": {
+    "chess.js": "^1.0.0-beta.2"
+  }
+}

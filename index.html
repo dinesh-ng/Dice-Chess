@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dice Chess 1.0</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="js/chessboard-1.0.0.js"></script>
+    <script src="js/chessboard-1.0.0.min.js"></script>
+    <script src="js/chess.js"></script>
+    <link rel="stylesheet" href="css/chessboard-1.0.0.min.css" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="chessGame">
+      <h1>Dice Chess 1.0</h1>
+      <div class="mainBoard">
+        <div id="myboard" style="width: 480px"></div>
+      </div>
+      <div id="dieroll"></div>
+      <div class="gameInfo">
+        <!-- <label>Status:</label> -->
+        <div id="status"></div>
+        <!-- <label>FEN:</label>
+        <div id="fen"></div> -->
+        <hr />
+        <label>PGN:</label>
+        <div id="pgn"></div>
+      </div>
+    </div>
+    <!-- <button id="randomGameBtn">Start a random game</button> -->
+    <script src="boardscript.js"></script>
+  </body>
+</html>
