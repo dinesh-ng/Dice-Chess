@@ -6,11 +6,12 @@ var $pgn = $("#pgn");
 var $dieroll = $("#dieroll");
 const Die = ["P", "N", "B", "R", "Q", "K"];
 var rolledPiece = "";
+var startingSquares = [];
 
 // var whiteSquareGrey = "#a9a9a9";
 var whiteSquareGrey = "#99d7a0";
 // var blackSquareGrey = "#696969";
-var blackSquareGrey = "#395e31";
+var blackSquareGrey = "#98cf8c9e";
 
 /******************************CONFIG FOR BOARD***************** */
 var config = {
@@ -50,6 +51,18 @@ function getPieceName(piece) {
   }
 }
 
+function highlightPiece(square) {
+  var $square = $("#myboard .square-" + square);
+
+  $square.addClass("highlight-black");
+}
+function removeHighlight() {
+  startingSquares.forEach((square) => {
+    var $square = $("#myboard .square-" + square);
+    $square.removeClass("highlight-black");
+  });
+}
+
 /**********highlights clicked squares on drag and drop****************/
 function removeGreySquares() {
   $("#myboard .square-55d63").css("background", "");
@@ -85,7 +98,6 @@ function onDragStart(source, piece, position, orientation) {
   if (piece.search(regex) == -1) {
     return false;
   }
-
   onMouseoverSquare(source, piece);
 }
 
@@ -143,6 +155,7 @@ function rollDice(color) {
   console.log("Rolled piece is " + currentRoll);
   let validMoves = game.moves({
     piece: Die[n],
+    verbose: true,
   });
 
   // exit if there are no moves available for this square
@@ -150,7 +163,12 @@ function rollDice(color) {
     console.log("Invalid piece, rerolling!");
     rollDice(game.turn());
   } else {
+    // console.log(validMoves);
     rolledPiece = currentRoll;
+    validMoves.forEach((move) => {
+      startingSquares.push(move.from);
+    });
+    // startingSquares.push(validMoves.from);
   }
 }
 
@@ -182,7 +200,12 @@ function updateStatus() {
     }
   }
 
+  removeHighlight();
+  startingSquares = [];
   rollDice(game.turn());
+  startingSquares.forEach((e) => {
+    highlightPiece(e);
+  });
   // console.log("Rolled piece is " + rolledPiece);
 
   $status.html(status);
@@ -194,6 +217,7 @@ function updateStatus() {
 }
 
 board = Chessboard("myboard", config);
+// board = Chessboard("testboard", config);
 
 // prevent scrolling on touch devices
 $("#myboard").on(
@@ -207,21 +231,21 @@ updateStatus();
 // ****************************************************
 // RANDOM vs RANDOM
 // Uncomment below for tests
-/*
-function makeRandomMove() {
-  if (game.game_over()) return;
-  rollDice(game.turn());
-  let possibleMoves = game.moves({
-    piece: rolledPiece.slice(1, 2),
-  });
-  // exit if the game is over
 
-  var randomIdx = Math.floor(Math.random() * possibleMoves.length);
-  game.move(possibleMoves[randomIdx]);
-  board.position(game.fen());
-  updateStatus();
-  window.setTimeout(makeRandomMove, 50);
-}
+// function makeRandomMove() {
+//   if (game.game_over()) return;
+//   rollDice(game.turn());
+//   let possibleMoves = game.moves({
+//     piece: rolledPiece.slice(1, 2),
+//   });
+//   // exit if the game is over
 
-window.setTimeout(makeRandomMove, 50);
-*/
+//   var randomIdx = Math.floor(Math.random() * possibleMoves.length);
+//   game.move(possibleMoves[randomIdx]);
+//   board.position(game.fen());
+//   updateStatus();
+//   window.setTimeout(makeRandomMove, 50);
+// }
+
+// // makeRandomMove();
+// window.setTimeout(makeRandomMove, 50);

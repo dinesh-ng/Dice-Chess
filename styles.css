@@ -73,3 +73,19 @@
   margin: 10px;
   display: inline-block;
 }
+
+.highlight-black {
+  /* background-color: rgba(218, 221, 57, 0.912); */
+  animation: fade 2s linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes fade {
+  0%,
+  100% {
+    background-color: rgb(255, 208, 0);
+  }
+  50% {
+    background-color: rgba(237, 102, 65, 0.897);
+  }
+}
