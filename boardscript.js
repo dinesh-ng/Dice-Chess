@@ -211,9 +211,14 @@ function updateStatus() {
   $status.html(status);
   $fen.html(game.fen());
   $pgn.html(game.pgn());
-  let dierollText =
-    "Rolled piece is " + getTurn(game.turn()) + " " + getPieceName(rolledPiece);
-  $dieroll.html(dierollText);
+  if (!game.game_over()) {
+    let dierollText =
+      "Rolled piece is " +
+      getTurn(game.turn()) +
+      " " +
+      getPieceName(rolledPiece);
+    $dieroll.html(dierollText);
+  }
 }
 
 board = Chessboard("myboard", config);
