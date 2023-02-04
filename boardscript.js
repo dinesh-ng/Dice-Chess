@@ -3,13 +3,21 @@ const game = new Chess();
 const $status = $("#status");
 const $fen = $("#fen");
 const $pgn = $("#pgn");
-const $dieroll = $("#dieroll");
+const $dieText = $("#dieText");
 const Die = ["P", "N", "B", "R", "Q", "K"];
 let rolledPiece = "";
 let startingSquares = [];
+let gameSuspend = false;
 
 /*************Experimental Dice **/
-
+const dice = document.querySelector(".dice");
+const rollBtn = document.querySelector(".roll");
+rollBtn.addEventListener("click", () => {
+  if (gameSuspend) {
+    return;
+  }
+  rollDice(game.turn());
+});
 /******************************* */
 
 // var whiteSquareGrey = "#a9a9a9";
@@ -44,12 +52,12 @@ function getPieceName(piece) {
 function highlightPiece(square) {
   var $square = $("#myboard .square-" + square);
 
-  $square.addClass("highlight-black");
+  $square.addClass("highlight-valid");
 }
 function removeHighlight() {
   startingSquares.forEach((square) => {
     var $square = $("#myboard .square-" + square);
-    $square.removeClass("highlight-black");
+    $square.removeClass("highlight-valid");
   });
 }
 
@@ -73,7 +81,7 @@ function greySquare(square) {
 /************ Called on dragging the piece ********************/
 function onDragStart(source, piece, position, orientation) {
   // do not pick up pieces if the game is over
-  if (game.game_over()) return false;
+  if (game.game_over() || gameSuspend) return false;
 
   // only pick up pieces for the side to move
   if (
@@ -109,6 +117,7 @@ function onDrop(source, target) {
 
 /***********Highlights valid squares for the piece************* */
 function onMouseoverSquare(square, piece) {
+  if (gameSuspend) return;
   // get list of possible moves for this square
   var moves = game.moves({
     square: square,
@@ -133,16 +142,19 @@ function onMouseoutSquare(square, piece) {
 // update the board position after the piece snap
 // for castling, en passant, pawn promotion
 function onSnapEnd() {
+  removeHighlight();
   board.position(game.fen());
 }
 
 /*********************Roll the Dice and log the roll, auto reroll when invalid**************** */
 
 function rollDice(color) {
+  if (game.game_over()) return;
+  gameSuspend = true;
+  $dieText.html("Rolling......");
   removeHighlight();
   startingSquares = [];
   // removeHighlight();
-  if (game.game_over()) return;
   let n = Math.floor(Math.random() * 6);
   let currentRoll = color + Die[n];
   console.log("Rolled piece is " + currentRoll);
@@ -157,13 +169,56 @@ function rollDice(color) {
     rollDice(game.turn());
   } else {
     // console.log(validMoves);
+    const random = n + 1;
+    dice.style.animation = "rolling 2.5s";
+    setTimeout(() => {
+      switch (random) {
+        case 1:
+          dice.style.transform = "rotateX(0deg) rotateY(0deg)";
+          break;
+
+        case 6:
+          dice.style.transform = "rotateX(180deg) rotateY(0deg)";
+          break;
+
+        case 2:
+          dice.style.transform = "rotateX(-90deg) rotateY(0deg)";
+          break;
+
+        case 5:
+          dice.style.transform = "rotateX(90deg) rotateY(0deg)";
+          break;
+
+        case 3:
+          dice.style.transform = "rotateX(0deg) rotateY(90deg)";
+          break;
+
+        case 4:
+          dice.style.transform = "rotateX(0deg) rotateY(-90deg)";
+          break;
+
+        default:
+          break;
+      }
+      dice.style.animation = "none";
+      if (!game.game_over()) {
+        let dierollText =
+          "Rolled piece is " +
+          getTurn(game.turn()) +
+          " " +
+          getPieceName(rolledPiece);
+        $dieText.html(dierollText);
+      }
+      validMoves.forEach((move) => {
+        startingSquares.push(move.from);
+      });
+      startingSquares.forEach((e) => {
+        highlightPiece(e);
+      });
+      gameSuspend = false;
+    }, 2500);
     rolledPiece = currentRoll;
-    validMoves.forEach((move) => {
-      startingSquares.push(move.from);
-    });
-    startingSquares.forEach((e) => {
-      highlightPiece(e);
-    });
+
     // startingSquares.push(validMoves.from);
   }
 }
@@ -198,21 +253,13 @@ function updateStatus() {
 
   // removeHighlight();
   // startingSquares = [];
-  rollDice(game.turn());
+  // rollDice(game.turn());
 
   // console.log("Rolled piece is " + rolledPiece);
 
   $status.html(status);
   $fen.html(game.fen());
   $pgn.html(game.pgn());
-  if (!game.game_over()) {
-    let dierollText =
-      "Rolled piece is " +
-      getTurn(game.turn()) +
-      " " +
-      getPieceName(rolledPiece);
-    $dieroll.html(dierollText);
-  }
 }
 
 /******************************CONFIG FOR BOARD***************** */
