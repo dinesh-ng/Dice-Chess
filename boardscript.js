@@ -1,31 +1,21 @@
-var board = null;
-var game = new Chess();
-var $status = $("#status");
-var $fen = $("#fen");
-var $pgn = $("#pgn");
-var $dieroll = $("#dieroll");
+let board = null;
+const game = new Chess();
+const $status = $("#status");
+const $fen = $("#fen");
+const $pgn = $("#pgn");
+const $dieroll = $("#dieroll");
 const Die = ["P", "N", "B", "R", "Q", "K"];
-var rolledPiece = "";
-var startingSquares = [];
+let rolledPiece = "";
+let startingSquares = [];
+
+/*************Experimental Dice **/
+
+/******************************* */
 
 // var whiteSquareGrey = "#a9a9a9";
-var whiteSquareGrey = "#99d7a0";
+const whiteSquareGrey = "#99d7a0";
 // var blackSquareGrey = "#696969";
-var blackSquareGrey = "#98cf8c9e";
-
-/******************************CONFIG FOR BOARD***************** */
-var config = {
-  showNotation: true,
-  position: "start",
-  orientation: "white",
-  draggable: true,
-  dropOffBoard: "snapback",
-  onDragStart: onDragStart,
-  onDrop: onDrop,
-  onSnapEnd: onSnapEnd,
-  // onMouseoutSquare: onMouseoutSquare,
-  // onMouseoverSquare: onMouseoverSquare,
-};
+const blackSquareGrey = "#98cf8c9e";
 
 /*****************Utility functions************ */
 function getTurn(color) {
@@ -149,6 +139,9 @@ function onSnapEnd() {
 /*********************Roll the Dice and log the roll, auto reroll when invalid**************** */
 
 function rollDice(color) {
+  removeHighlight();
+  startingSquares = [];
+  // removeHighlight();
   if (game.game_over()) return;
   let n = Math.floor(Math.random() * 6);
   let currentRoll = color + Die[n];
@@ -168,14 +161,17 @@ function rollDice(color) {
     validMoves.forEach((move) => {
       startingSquares.push(move.from);
     });
+    startingSquares.forEach((e) => {
+      highlightPiece(e);
+    });
     // startingSquares.push(validMoves.from);
   }
 }
 
 /*****************Update Game Status after each move********** */
 function updateStatus() {
-  var status = "";
-  var moveColor = "White";
+  let status = "";
+  let moveColor = "White";
   if (game.turn() === "b") {
     moveColor = "Black";
   }
@@ -200,12 +196,10 @@ function updateStatus() {
     }
   }
 
-  removeHighlight();
-  startingSquares = [];
+  // removeHighlight();
+  // startingSquares = [];
   rollDice(game.turn());
-  startingSquares.forEach((e) => {
-    highlightPiece(e);
-  });
+
   // console.log("Rolled piece is " + rolledPiece);
 
   $status.html(status);
@@ -221,16 +215,26 @@ function updateStatus() {
   }
 }
 
+/******************************CONFIG FOR BOARD***************** */
+const config = {
+  showNotation: true,
+  position: "start",
+  orientation: "white",
+  draggable: true,
+  dropOffBoard: "snapback",
+  onDragStart: onDragStart,
+  onDrop: onDrop,
+  onSnapEnd: onSnapEnd,
+  // onMouseoutSquare: onMouseoutSquare,
+  // onMouseoverSquare: onMouseoverSquare,
+};
 board = Chessboard("myboard", config);
 // board = Chessboard("testboard", config);
 
-// prevent scrolling on touch devices
-$("#myboard").on(
-  "scroll touchmove touchend touchstart contextmenu",
-  function (e) {
-    e.preventDefault();
-  }
-);
+/**Prevents scrolling on touch devices  */
+$("#myboard").on("scroll touchmove touchend touchstart contextmenu", (e) => {
+  e.preventDefault();
+});
 updateStatus();
 
 // ****************************************************
