@@ -6,7 +6,7 @@
   max-height: 300px;
   border-radius: 30px;
   /* background: #eeeeee; */
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); */
   /* border: 1px solid black; */
 }
 
@@ -37,7 +37,7 @@
   border: 5px solid #f6f3f0;
   transform-style: preserve-3d;
   background: linear-gradient(145deg, #dddbd8, #fff);
-  background-color: rgb(11, 145, 255);
+  background-color: rgb(67 177 106);
 }
 
 /* .face::before {
@@ -63,37 +63,37 @@
 
 .front {
   transform: translateZ(50px);
-  background-image: url("img/chesspieces/wikipedia/bP.png");
+  background-image: url("img/chesspieces/wikipedia/wP.png");
   background-position: center;
 }
 
 .back {
   transform: rotateX(180deg) translateZ(50px);
-  background-image: url("img/chesspieces/wikipedia/bK.png");
+  background-image: url("img/chesspieces/wikipedia/wK.png");
   background-position: center;
 }
 
 .top {
   transform: rotateX(90deg) translateZ(50px);
-  background-image: url("img/chesspieces/wikipedia/bN.png");
+  background-image: url("img/chesspieces/wikipedia/wN.png");
   background-position: center;
 }
 
 .bottom {
   transform: rotateX(-90deg) translateZ(50px);
-  background-image: url("img/chesspieces/wikipedia/bQ.png");
+  background-image: url("img/chesspieces/wikipedia/wQ.png");
   background-position: center;
 }
 
 .right {
   transform: rotateY(90deg) translateZ(50px);
-  background-image: url("img/chesspieces/wikipedia/bR.png");
+  background-image: url("img/chesspieces/wikipedia/wR.png");
   background-position: center;
 }
 
 .left {
   transform: rotateY(-90deg) translateZ(50px);
-  background-image: url("img/chesspieces/wikipedia/bB.png");
+  background-image: url("img/chesspieces/wikipedia/wB.png");
   background-position: center;
 }
 

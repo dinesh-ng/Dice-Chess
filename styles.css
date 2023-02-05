@@ -8,6 +8,12 @@ body {
   height: 100vh;
   background-color: #00abb3;
 }
+.wrapper {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+}
 .chessGame {
   background-color: #e3dcaf91;
   text-align: center;
@@ -65,8 +71,8 @@ body {
   font-family: "Kanit", sans-serif;
   margin: 10px;
   display: inline-block;
-  margin-left: 80px;
-  margin-right: 80px;
+  width: 200px;
+  height: 50px;
 }
 
 .highlight-valid {
@@ -86,4 +92,11 @@ body {
 
 .custom-square-dark {
   background-color: #a53636;
+}
+
+@media (max-width: 800px) {
+  .wrapper {
+    /* flex-basis: 0; */
+    flex-direction: column;
+  }
 }
