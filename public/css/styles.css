@@ -75,6 +75,23 @@ body {
   height: 50px;
 }
 
+#startButton {
+  display: block;
+  cursor: pointer;
+  color: #b33951;
+  /* margin-top: 60px; */
+  margin: 20px auto;
+  padding: 6px 12px;
+  border-radius: 3px;
+  font: 700 16px "Montserrat";
+  border: 2px solid #b33951;
+  transition: 0.4s;
+}
+#startButton:hover {
+  color: #fff;
+  background: #b33951;
+}
+
 .highlight-valid {
   animation: fade 2s linear;
   animation-iteration-count: infinite;

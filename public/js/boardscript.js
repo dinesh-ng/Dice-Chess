@@ -8,12 +8,22 @@ const Die = ["P", "N", "B", "R", "Q", "K"];
 let rolledPiece = "";
 let startingSquares = [];
 let gameSuspend = false;
+let gameRunning = false;
+
+/****** Start Button************/
+const startButton = document.querySelector("#startButton");
+startButton.addEventListener("click", () => {
+  gameRunning = true;
+  startButton.style.display = "none";
+  rollDice(game.turn());
+});
+/***************************** */
 
 /*************Experimental Dice **/
 const dice = document.querySelector(".dice");
 const rollBtn = document.querySelector(".roll");
 rollBtn.addEventListener("click", () => {
-  if (gameSuspend) {
+  if (gameSuspend || !gameRunning) {
     return;
   }
   rollDice(game.turn());
