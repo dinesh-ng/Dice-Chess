@@ -1,0 +1,127 @@
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+}
+body {
+  height: 100vh;
+  background-color: #00abb3;
+}
+#connectedClients {
+  float: right;
+  padding: 3px;
+  font-family: monospace;
+  color: lawngreen;
+}
+.wrapper {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.chessGame {
+  background-color: #e3dcaf91;
+  text-align: center;
+  position: relative;
+  min-width: fit-content;
+  min-height: fit-content;
+  border-radius: 10px;
+  max-width: 80%;
+  margin: auto;
+}
+.chessGame > * {
+  vertical-align: middle;
+}
+
+.chessGame h1 {
+  color: #ffffff;
+  padding: 10px;
+  margin: 10px auto 10px;
+  font-family: "Kanit", sans-serif;
+}
+.mainBoard {
+  display: inline-block;
+  margin: 20px;
+  margin-right: 50px;
+}
+
+.gameInfo {
+  display: block;
+  color: #ffffff;
+  text-align: center;
+  border: 2px solid grey;
+  border-radius: 5px;
+  font-family: "Kanit", sans-serif;
+}
+
+#status {
+  font-family: "Kanit", sans-serif;
+  line-height: 2;
+  padding: 5px;
+  margin: 5px;
+  color: black;
+}
+
+#pgn {
+  font-family: "Kanit", sans-serif;
+  line-height: 2;
+  padding: 5px;
+  margin: 5px;
+}
+.dieface {
+  display: inline-block;
+  background-color: red;
+}
+#dieText {
+  color: #4f4152;
+  font-family: "Kanit", sans-serif;
+  margin: 10px;
+  /* display: inline-block; */
+  display: none;
+  width: 200px;
+  height: 50px;
+}
+
+#startButton {
+  display: block;
+  cursor: pointer;
+  color: #b33951;
+  /* margin-top: 60px; */
+  margin: 20px auto;
+  padding: 6px 12px;
+  border-radius: 3px;
+  font: 700 16px "Montserrat";
+  border: 2px solid #b33951;
+  transition: 0.4s;
+}
+#startButton:hover {
+  color: #fff;
+  background: #b33951;
+}
+
+.highlight-valid {
+  animation: fade 2s linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes fade {
+  0%,
+  100% {
+    background-color: rgb(255, 208, 0);
+  }
+  50% {
+    background-color: rgba(237, 102, 65, 0.897);
+  }
+}
+
+.custom-square-dark {
+  background-color: #a53636;
+}
+
+@media (max-width: 800px) {
+  .wrapper {
+    /* flex-basis: 0; */
+    flex-direction: column;
+  }
+}
