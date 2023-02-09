@@ -3,6 +3,7 @@ const STATUS = $("#status");
 const FEN = $("#fen");
 const PGN = $("#pgn");
 const DIETEXT = $("#dieText");
+let IAM = "white";
 const Die = ["P", "N", "B", "R", "Q", "K"];
 const whiteSquareHighlight = "#99d7a0";
 const blackSquareHighlight = "#98cf8c9e";
@@ -17,26 +18,25 @@ const socket = io();
 socket.on("broadcast", (connected) => {
   $("#connectedClients").text(`Online: ${connected}`);
 });
-socket.on("game-started", (gameData) => {
+socket.on("game-started", (playingSide) => {
   gameRunning = true;
   startButton.style.display = "none";
-  syncBoard(
-    gameData.currStatus,
-    gameData.currFen,
-    gameData.currPGN,
-    gameData.currdierollText
-  );
+  board.orientation(playingSide);
+  IAM = "black";
+  updateStatus();
 });
-socket.on("move-received", (move, gameData) => {
-  console.log(move);
+socket.on("roll-received", (obj) => {
+  dierollAnimation(obj.randomNumber, obj.validMoves);
+  rolledPiece = obj.rolledPiece;
+  updateStatus();
+});
+socket.on("move-received", (move) => {
+  // console.log(move);
   makeMove(move.from, move.to);
   updateBoard(game.fen());
-  syncBoard(
-    gameData.currStatus,
-    gameData.currFen,
-    gameData.currPGN,
-    gameData.currdierollText
-  );
+  removeSquareAnimation();
+  validPieceSquares = [];
+  updateStatus();
 });
 
 /****** Start Button************/
@@ -47,7 +47,7 @@ startButton.addEventListener("click", () => {
   });
   gameRunning = true;
   startButton.style.display = "none";
-  rollDice(game.turn());
+  // rollDice(game.turn());
 });
 
 /*************Experimental Dice **/
@@ -56,6 +56,12 @@ const rollBtn = document.querySelector(".roll");
 rollBtn.addEventListener("click", () => {
   if (gameSuspend || !gameRunning) {
     return;
+  }
+  if (
+    (IAM === "white" && game.turn() == "b") ||
+    (IAM === "black" && game.turn() == "w")
+  ) {
+    return false;
   }
   rollDice(game.turn());
 });
@@ -136,6 +142,12 @@ function addValidHighlights(square) {
 function onDragStart(source, piece, position, orientation) {
   // do not pick up pieces if the game is over
   if (game.game_over() || gameSuspend) return false;
+  if (
+    (IAM === "white" && piece.search(/^b/) !== -1) ||
+    (IAM === "black" && piece.search(/^w/) !== -1)
+  ) {
+    return false;
+  }
   // only pick up pieces for the side to move
   if (
     (game.turn() === "w" && piece.search(/^b/) !== -1) ||
@@ -163,6 +175,7 @@ function onDrop(source, target) {
 /**update the board position after the piece snap for castling, en passant, pawn promotion*/
 function onSnapEnd() {
   removeSquareAnimation();
+  validPieceSquares = [];
   board.position(game.fen());
 }
 /**Highlights all legal squares from given square */
@@ -259,6 +272,11 @@ function rollDice(color) {
     console.log("Current roll: " + currentRoll);
     dierollAnimation(n + 1, validMoves);
     rolledPiece = currentRoll;
+    socket.emit("roll-complete", {
+      rolledPiece: rolledPiece,
+      randomNumber: n + 1,
+      validMoves: validMoves,
+    });
   }
 }
 

@@ -19,13 +19,15 @@ io.on("connection", (socket) => {
   io.sockets.emit("broadcast", connected);
   console.log("user connected");
 
-  socket.on("start-game", (val) => {
-    console.log(`start game`);
-    users[socket.id] = val.uname;
-    socket.broadcast.emit("game-started");
+  socket.on("start-game", (obj) => {
+    console.log(`start game ${obj.playingSide}`);
+    socket.broadcast.emit("game-started", obj.playingSide);
+  });
+  socket.on("roll-complete", (obj) => {
+    socket.broadcast.emit("roll-received", obj);
   });
   socket.on("move-played", (move) => {
-    console.log(move);
+    // console.log(move);
     socket.broadcast.emit("move-received", move);
   });
 
