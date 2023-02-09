@@ -1,18 +1,9 @@
-const express = require("express");
 const PORT = 3000 || process.env.PORT;
+console.log("Server running at port " + PORT);
 
-const app = express();
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static("public"));
-
-const http = require("http").Server(app);
-const io = require("socket.io")(http);
+const io = require("socket.io")(PORT, { cors: { origin: "*" } });
 const users = {};
 let connected = 0;
-
-app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/index.html");
-});
 
 io.on("connection", (socket) => {
   connected++;
@@ -37,8 +28,4 @@ io.on("connection", (socket) => {
 
     console.log("user disconnected");
   });
-});
-
-http.listen(PORT, () => {
-  console.log(`Server started on port ${PORT}`);
 });
