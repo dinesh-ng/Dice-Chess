@@ -1,23 +1,54 @@
-let board = null;
 const game = new Chess();
-const $status = $("#status");
-const $fen = $("#fen");
-const $pgn = $("#pgn");
-const $dieText = $("#dieText");
+const STATUS = $("#status");
+const FEN = $("#fen");
+const PGN = $("#pgn");
+const DIETEXT = $("#dieText");
 const Die = ["P", "N", "B", "R", "Q", "K"];
-let rolledPiece = "";
-let startingSquares = [];
+const whiteSquareHighlight = "#99d7a0";
+const blackSquareHighlight = "#98cf8c9e";
+let board = null;
 let gameSuspend = false;
 let gameRunning = false;
+let validPieceSquares = [];
+let rolledPiece = "";
+
+/**Client Socket IO */
+const socket = io();
+socket.on("game-started", (gameData) => {
+  gameRunning = true;
+  startButton.style.display = "none";
+  syncBoard(
+    gameData.currStatus,
+    gameData.currFen,
+    gameData.currPGN,
+    gameData.currdierollText
+  );
+});
+socket.on("move-received", (move, gameData) => {
+  console.log(move);
+  makeMove(move.from, move.to);
+  updateBoard(game.fen());
+  syncBoard(
+    gameData.currStatus,
+    gameData.currFen,
+    gameData.currPGN,
+    gameData.currdierollText
+  );
+});
 
 /****** Start Button************/
 const startButton = document.querySelector("#startButton");
 startButton.addEventListener("click", () => {
+  socket.emit("game-started", {
+    currStatus: STATUS.html,
+    currFen: game.fen(),
+    currPGN: game.pgn(),
+    currdierollText: DIETEXT.html,
+  });
   gameRunning = true;
   startButton.style.display = "none";
   rollDice(game.turn());
 });
-/***************************** */
 
 /*************Experimental Dice **/
 const dice = document.querySelector(".dice");
@@ -28,18 +59,34 @@ rollBtn.addEventListener("click", () => {
   }
   rollDice(game.turn());
 });
-/******************************* */
-
-// var whiteSquareGrey = "#a9a9a9";
-const whiteSquareGrey = "#99d7a0";
-// var blackSquareGrey = "#696969";
-const blackSquareGrey = "#98cf8c9e";
 
 /*****************Utility functions************ */
+/**syncBoard */
+function syncBoard(currStatus, currFen, currPGN, currdierollText) {
+  STATUS.html(currStatus);
+  FEN.html(currFen);
+  PGN.html(currPGN);
+  DIETEXT.html(currdierollText);
+}
+/**Returns move on the chess logic, null if invalid move. Note: does not update the board */
+function makeMove(startSquare, endSquare) {
+  const move = game.move({
+    from: startSquare,
+    to: endSquare,
+    promotion: "q", // NOTE: always promote to a queen for example simplicity
+  });
+  return move;
+}
+/**Update board to given fen */
+function updateBoard(fen) {
+  board.position(fen);
+}
+/**Returns turn color as string, i/p is "b" or "w"*/
 function getTurn(color) {
   if (color == "w") return "white";
   else return "black";
 }
+/**Returns piece name as string, ex. input: bN=>Knight */
 function getPieceName(piece) {
   switch (piece.slice(1, 2)) {
     case "N":
@@ -58,41 +105,37 @@ function getPieceName(piece) {
       return "Error!";
   }
 }
-
-function highlightPiece(square) {
+/**Flicker rolled piece starting squares */
+function animateSquare(square) {
   var $square = $("#myboard .square-" + square);
 
   $square.addClass("highlight-valid");
 }
-function removeHighlight() {
-  startingSquares.forEach((square) => {
+/**Removes starting square animation */
+function removeSquareAnimation() {
+  validPieceSquares.forEach((square) => {
     var $square = $("#myboard .square-" + square);
     $square.removeClass("highlight-valid");
   });
 }
-
-/**********highlights clicked squares on drag and drop****************/
-function removeGreySquares() {
+/**Removes legal move highlights */
+function removeValidHighlights() {
   $("#myboard .square-55d63").css("background", "");
 }
-
-function greySquare(square) {
+/**Adds legal move highlights to given square*/
+function addValidHighlights(square) {
   var $square = $("#myboard .square-" + square);
-
-  var background = whiteSquareGrey;
+  var background = whiteSquareHighlight;
   if ($square.hasClass("black-3c85d")) {
-    background = blackSquareGrey;
+    background = blackSquareHighlight;
   }
-
   $square.css("background", background);
 }
-/**********************************************************/
 
-/************ Called on dragging the piece ********************/
+/**On piece drag/click */
 function onDragStart(source, piece, position, orientation) {
   // do not pick up pieces if the game is over
   if (game.game_over() || gameSuspend) return false;
-
   // only pick up pieces for the side to move
   if (
     (game.turn() === "w" && piece.search(/^b/) !== -1) ||
@@ -100,7 +143,6 @@ function onDragStart(source, piece, position, orientation) {
   ) {
     return false;
   }
-
   //only pick rolled piece
   const regex = new RegExp(`^${rolledPiece}`);
   if (piece.search(regex) == -1) {
@@ -108,24 +150,22 @@ function onDragStart(source, piece, position, orientation) {
   }
   onMouseoverSquare(source, piece);
 }
-
-/***********Called on piece drop*************************** */
+/**On piece drop, note: does not means that move is complete yet. */
 function onDrop(source, target) {
-  removeGreySquares();
+  removeValidHighlights();
   // see if the move is legal
-  var move = game.move({
-    from: source,
-    to: target,
-    promotion: "q", // NOTE: always promote to a queen for example simplicity
-  });
-
+  const move = makeMove(source, target);
   // illegal move
   if (move === null) return "snapback";
-
+  socket.emit("move-played", { from: source, to: target });
   updateStatus();
 }
-
-/***********Highlights valid squares for the piece************* */
+/**update the board position after the piece snap for castling, en passant, pawn promotion*/
+function onSnapEnd() {
+  removeSquareAnimation();
+  board.position(game.fen());
+}
+/**Highlights all legal squares from given square */
 function onMouseoverSquare(square, piece) {
   if (gameSuspend) return;
   // get list of possible moves for this square
@@ -133,41 +173,79 @@ function onMouseoverSquare(square, piece) {
     square: square,
     verbose: true,
   });
-
   // exit if there are no moves available for this square
   if (moves.length === 0) return;
-
-  // highlight the square they moused over
-  greySquare(square);
-
   // highlight the possible squares for this piece
   for (var i = 0; i < moves.length; i++) {
-    greySquare(moves[i].to);
+    addValidHighlights(moves[i].to);
   }
 }
 function onMouseoutSquare(square, piece) {
-  removeGreySquares();
+  removeValidHighlights();
 }
 
-// update the board position after the piece snap
-// for castling, en passant, pawn promotion
-function onSnapEnd() {
-  removeHighlight();
-  board.position(game.fen());
+/**Dice Roll Animation i/p is piece index(1-6) */
+function dierollAnimation(index, validMoves) {
+  // const random = n + 1;
+  dice.style.animation = "rolling 2.5s";
+  setTimeout(() => {
+    switch (index) {
+      case 1:
+        dice.style.transform = "rotateX(0deg) rotateY(0deg)";
+        break;
+
+      case 6:
+        dice.style.transform = "rotateX(180deg) rotateY(0deg)";
+        break;
+
+      case 2:
+        dice.style.transform = "rotateX(-90deg) rotateY(0deg)";
+        break;
+
+      case 5:
+        dice.style.transform = "rotateX(90deg) rotateY(0deg)";
+        break;
+
+      case 3:
+        dice.style.transform = "rotateX(0deg) rotateY(90deg)";
+        break;
+
+      case 4:
+        dice.style.transform = "rotateX(0deg) rotateY(-90deg)";
+        break;
+
+      default:
+        break;
+    }
+    dice.style.animation = "none";
+    // if (!game.game_over()) {
+    //   let dierollText =
+    //     "Rolled piece is " +
+    //     getTurn(game.turn()) +
+    //     " " +
+    //     getPieceName(rolledPiece);
+    //   DIETEXT.html(dierollText);
+    // }
+    validMoves.forEach((move) => {
+      validPieceSquares.push(move.from);
+    });
+    validPieceSquares.forEach((e) => {
+      animateSquare(e);
+    });
+    gameSuspend = false;
+  }, 2600);
 }
-
-/*********************Roll the Dice and log the roll, auto reroll when invalid**************** */
-
+/**Rolls the die and sets rolled piece, auto reroll for invalid */
 function rollDice(color) {
   if (game.game_over()) return;
   gameSuspend = true;
-  $dieText.html("Rolling......");
-  removeHighlight();
-  startingSquares = [];
-  // removeHighlight();
+  // DIETEXT.html("Rolling......");
+  removeSquareAnimation();
+  validPieceSquares = [];
+  //roll logic
   let n = Math.floor(Math.random() * 6);
   let currentRoll = color + Die[n];
-  console.log("Rolled piece is " + currentRoll);
+  // console.log("Rolled piece is " + currentRoll);
   let validMoves = game.moves({
     piece: Die[n],
     verbose: true,
@@ -175,65 +253,16 @@ function rollDice(color) {
 
   // exit if there are no moves available for this square
   if (validMoves.length === 0) {
-    console.log("Invalid piece, rerolling!");
+    // console.log("Invalid piece, rerolling!");
     rollDice(game.turn());
   } else {
-    // console.log(validMoves);
-    const random = n + 1;
-    dice.style.animation = "rolling 2.5s";
-    setTimeout(() => {
-      switch (random) {
-        case 1:
-          dice.style.transform = "rotateX(0deg) rotateY(0deg)";
-          break;
-
-        case 6:
-          dice.style.transform = "rotateX(180deg) rotateY(0deg)";
-          break;
-
-        case 2:
-          dice.style.transform = "rotateX(-90deg) rotateY(0deg)";
-          break;
-
-        case 5:
-          dice.style.transform = "rotateX(90deg) rotateY(0deg)";
-          break;
-
-        case 3:
-          dice.style.transform = "rotateX(0deg) rotateY(90deg)";
-          break;
-
-        case 4:
-          dice.style.transform = "rotateX(0deg) rotateY(-90deg)";
-          break;
-
-        default:
-          break;
-      }
-      dice.style.animation = "none";
-      if (!game.game_over()) {
-        let dierollText =
-          "Rolled piece is " +
-          getTurn(game.turn()) +
-          " " +
-          getPieceName(rolledPiece);
-        $dieText.html(dierollText);
-      }
-      validMoves.forEach((move) => {
-        startingSquares.push(move.from);
-      });
-      startingSquares.forEach((e) => {
-        highlightPiece(e);
-      });
-      gameSuspend = false;
-    }, 2500);
+    console.log("Current roll: " + currentRoll);
+    dierollAnimation(n + 1, validMoves);
     rolledPiece = currentRoll;
-
-    // startingSquares.push(validMoves.from);
   }
 }
 
-/*****************Update Game Status after each move********** */
+/**Update html elements for current game status */
 function updateStatus() {
   let status = "";
   let moveColor = "White";
@@ -260,16 +289,9 @@ function updateStatus() {
       status += ", " + moveColor + " is in check";
     }
   }
-
-  // removeHighlight();
-  // startingSquares = [];
-  // rollDice(game.turn());
-
-  // console.log("Rolled piece is " + rolledPiece);
-
-  $status.html(status);
-  $fen.html(game.fen());
-  $pgn.html(game.pgn());
+  STATUS.html(`<p>${status}</p>`);
+  FEN.html(`<p>${game.fen()}</p>`);
+  PGN.html(`<p>${game.pgn()}</p>`);
 }
 
 /******************************CONFIG FOR BOARD***************** */
@@ -282,12 +304,8 @@ const config = {
   onDragStart: onDragStart,
   onDrop: onDrop,
   onSnapEnd: onSnapEnd,
-  // onMouseoutSquare: onMouseoutSquare,
-  // onMouseoverSquare: onMouseoverSquare,
 };
 board = Chessboard("myboard", config);
-// board = Chessboard("testboard", config);
-
 /**Prevents scrolling on touch devices  */
 $("#myboard").on("scroll touchmove touchend touchstart contextmenu", (e) => {
   e.preventDefault();
