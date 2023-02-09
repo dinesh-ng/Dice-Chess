@@ -63,37 +63,37 @@
 
 .front {
   transform: translateZ(50px);
-  background-image: url("/chess/img/chesspieces/wikipedia/wP.png");
+  background-image: url("chess/img/chesspieces/wikipedia/wP.png");
   background-position: center;
 }
 
 .back {
   transform: rotateX(180deg) translateZ(50px);
-  background-image: url("/chess/img/chesspieces/wikipedia/wK.png");
+  background-image: url("chess/img/chesspieces/wikipedia/wK.png");
   background-position: center;
 }
 
 .top {
   transform: rotateX(90deg) translateZ(50px);
-  background-image: url("/chess/img/chesspieces/wikipedia/wN.png");
+  background-image: url("chess/img/chesspieces/wikipedia/wN.png");
   background-position: center;
 }
 
 .bottom {
   transform: rotateX(-90deg) translateZ(50px);
-  background-image: url("/chess/img/chesspieces/wikipedia/wQ.png");
+  background-image: url("chess/img/chesspieces/wikipedia/wQ.png");
   background-position: center;
 }
 
 .right {
   transform: rotateY(90deg) translateZ(50px);
-  background-image: url("/chess/img/chesspieces/wikipedia/wR.png");
+  background-image: url("chess/img/chesspieces/wikipedia/wR.png");
   background-position: center;
 }
 
 .left {
   transform: rotateY(-90deg) translateZ(50px);
-  background-image: url("/chess/img/chesspieces/wikipedia/wB.png");
+  background-image: url("chess/img/chesspieces/wikipedia/wB.png");
   background-position: center;
 }
 
