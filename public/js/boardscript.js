@@ -14,6 +14,9 @@ let rolledPiece = "";
 
 /**Client Socket IO */
 const socket = io();
+socket.on("broadcast", (connected) => {
+  $("#connectedClients").text(`Online: ${connected}`);
+});
 socket.on("game-started", (gameData) => {
   gameRunning = true;
   startButton.style.display = "none";
@@ -39,11 +42,8 @@ socket.on("move-received", (move, gameData) => {
 /****** Start Button************/
 const startButton = document.querySelector("#startButton");
 startButton.addEventListener("click", () => {
-  socket.emit("game-started", {
-    currStatus: STATUS.html,
-    currFen: game.fen(),
-    currPGN: game.pgn(),
-    currdierollText: DIETEXT.html,
+  socket.emit("start-game", {
+    playingSide: "black",
   });
   gameRunning = true;
   startButton.style.display = "none";

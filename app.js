@@ -7,14 +7,16 @@ app.use(express.static("public"));
 
 const http = require("http").Server(app);
 const io = require("socket.io")(http);
-
 const users = {};
+let connected = 0;
 
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/index.html");
 });
 
 io.on("connection", (socket) => {
+  connected++;
+  io.sockets.emit("broadcast", connected);
   console.log("user connected");
 
   socket.on("start-game", (val) => {
@@ -28,6 +30,9 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
+    connected--;
+    io.sockets.emit("broadcast", connected);
+
     console.log("user disconnected");
   });
 });
