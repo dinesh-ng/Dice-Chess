@@ -1,13 +1,89 @@
+:root {
+  --dark-blue: #1766b3;
+  --light-blue: #7cb1e5;
+}
 * {
   margin: 0;
   padding: 0;
   border: 0;
   outline: 0;
+  box-sizing: border-box;
 }
 body {
+  font-family: "Kanit", sans-serif;
+  font-size: 16px;
   height: 100vh;
-  background-color: #00abb3;
+  margin: 20px;
+  background: linear-gradient(
+    0deg,
+    rgba(2, 0, 36, 1) 0%,
+    rgba(9, 9, 121, 1) 12%,
+    rgba(1, 183, 236, 1) 73%,
+    rgba(0, 212, 255, 1) 90%
+  );
 }
+ul {
+  list-style: none;
+}
+a {
+  text-decoration: none;
+}
+.btn {
+  cursor: pointer;
+  padding: 5px 15px;
+  background: darkorange;
+  color: floralwhite;
+  border: 1px solid black;
+  font-size: 17px;
+}
+
+.main-container {
+  max-width: 1400px;
+  margin: 20px auto;
+  overflow: hidden;
+}
+
+.main-header {
+  background: var(--dark-blue);
+  color: lightyellow;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.main-main {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+}
+
+.main-sidebar {
+  background: var(--light-blue);
+  color: black;
+  padding: 20px 20px 60px;
+  overflow-y: scroll;
+}
+
+.main-sidebar h2 {
+  font-size: 20px;
+  background: #645a5a;
+  color: white;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+.main-sidebar h3 {
+  margin-bottom: 15px;
+}
+.main-sidebar ul li {
+  padding: 10px 0;
+}
+.main-game {
+  padding: 10px;
+  max-height: 600px;
+}
+
 #connectedClients {
   float: right;
   padding: 3px;
@@ -16,43 +92,27 @@ body {
 }
 .wrapper {
   display: flex;
-  justify-content: space-around;
+  flex-direction: row;
   align-items: center;
-  flex-wrap: wrap;
-}
-.chessGame {
-  background-color: #e3dcaf91;
-  text-align: center;
-  position: relative;
-  min-width: fit-content;
-  min-height: fit-content;
   border-radius: 10px;
-  max-width: 80%;
-  margin: auto;
-}
-.chessGame > * {
-  vertical-align: middle;
 }
 
-.chessGame h1 {
-  color: #ffffff;
-  padding: 10px;
-  margin: 10px auto 10px;
-  font-family: "Kanit", sans-serif;
+.die-container {
+  flex: 1;
 }
-.mainBoard {
-  display: inline-block;
-  margin: 20px;
-  margin-right: 50px;
+.main-board {
+  flex: 2;
 }
-
-.gameInfo {
-  display: block;
-  color: #ffffff;
-  text-align: center;
+.main-game-info {
+  padding: 20px;
+  background-color: lightgrey;
   border: 2px solid grey;
   border-radius: 5px;
-  font-family: "Kanit", sans-serif;
+  text-align: center;
+}
+
+.game-notation {
+  background-color: black;
 }
 
 #status {
@@ -60,7 +120,8 @@ body {
   line-height: 2;
   padding: 5px;
   margin: 5px;
-  color: black;
+  color: white;
+  font-family: monospace;
 }
 
 #pgn {
@@ -68,36 +129,32 @@ body {
   line-height: 2;
   padding: 5px;
   margin: 5px;
+  color: white;
+  font-family: monospace;
 }
 .dieface {
   display: inline-block;
   background-color: red;
 }
-#dieText {
-  color: #4f4152;
-  font-family: "Kanit", sans-serif;
-  margin: 10px;
-  /* display: inline-block; */
-  display: none;
-  width: 200px;
-  height: 50px;
+
+#myboard {
+  min-width: 270px !important;
 }
 
 #startButton {
-  display: block;
   cursor: pointer;
-  color: #b33951;
-  /* margin-top: 60px; */
-  margin: 20px auto;
-  padding: 6px 12px;
-  border-radius: 3px;
-  font: 700 16px "Montserrat";
-  border: 2px solid #b33951;
+  color: white;
+  padding: 12px 12px;
+  background-color: mediumseagreen;
+  border-radius: 15px;
+  border: 2px solid black;
   transition: 0.4s;
+  font-family: inherit;
 }
 #startButton:hover {
-  color: #fff;
-  background: #b33951;
+  color: #121202;
+  background: #23db0c;
+  border: 2px solid white;
 }
 
 .highlight-valid {
@@ -115,13 +172,15 @@ body {
   }
 }
 
-.custom-square-dark {
-  background-color: #a53636;
-}
+@media (max-width: 768px) {
+  .main-main {
+    display: block;
+  }
 
-@media (max-width: 800px) {
+  .main-sidebar {
+    display: none;
+  }
   .wrapper {
-    /* flex-basis: 0; */
     flex-direction: column;
   }
 }

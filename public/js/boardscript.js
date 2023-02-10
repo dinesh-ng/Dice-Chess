@@ -15,6 +15,21 @@ let rolledPiece = "";
 
 /**Client Socket IO */
 const socket = io();
+
+const roomName = document.getElementById("room-name");
+const roomUsers = document.getElementById("users");
+//Get username and room from URL
+const { username, room } = Qs.parse(location.search, {
+  ignoreQueryPrefix: true,
+});
+//Join chatroom
+socket.emit("joinRoom", { username, room });
+
+//Get room and users
+socket.on("roomUsers", ({ room, users }) => {
+  outputRoomName(room);
+  outputUsers(users);
+});
 socket.on("broadcast", (connected) => {
   $("#connectedClients").text(`Online: ${connected}`);
 });
@@ -38,6 +53,17 @@ socket.on("move-received", (move) => {
   validPieceSquares = [];
   updateStatus();
 });
+
+// Display room name to DOM
+const outputRoomName = (room) => {
+  roomName.innerText = room;
+};
+
+//Add users to DOM
+const outputUsers = (users) => {
+  roomUsers.innerHTML = `
+  ${users.map((user) => `<li>${user.username}</li>`).join("")}`;
+};
 
 /****** Start Button************/
 const startButton = document.querySelector("#startButton");
@@ -324,6 +350,10 @@ const config = {
   onSnapEnd: onSnapEnd,
 };
 board = Chessboard("myboard", config);
+
+//resize board
+$(window).resize(board.resize);
+
 /**Prevents scrolling on touch devices  */
 $("#myboard").on("scroll touchmove touchend touchstart contextmenu", (e) => {
   e.preventDefault();

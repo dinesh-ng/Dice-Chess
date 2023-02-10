@@ -4,7 +4,8 @@
   "description": "A variant of the OG Chess game with luck integrated",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app",
+    "dev": "nodemon app" 
   },
   "author": "Dinesh Goswami",
   "license": "ISC",

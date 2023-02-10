@@ -16,7 +16,7 @@
 
 .dice {
   display: block;
-  margin: 50px;
+  margin: 50px auto;
   width: 100px;
   height: 100px;
   transform-style: preserve-3d;
@@ -141,7 +141,8 @@
   margin: 20px auto;
   padding: 6px 12px;
   border-radius: 3px;
-  font: 700 16px "Montserrat";
+  font: 700 16px;
+  font-family: inherit;
   border: 2px solid #b33951;
   transition: 0.4s;
 }

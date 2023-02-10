@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dice Chess 1.0</title>
+    <link rel="icon" type="image/x-icon" href="favicon.png?v=2" />
+    <!-- Chessboard CSS -->
+    <link rel="stylesheet" href="chess/css/chessboard-1.0.0.min.css" />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="css/die.css" />
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kanit&display=swap"
+      rel="stylesheet"
+    />
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <!-- Chessboard and client chess.js -->
+    <script src="chess/js/chessboard-1.0.0.js"></script>
+    <script src="chess/js/chessboard-1.0.0.min.js"></script>
+    <script src="chess/js/chess.js"></script>
+  </head>
+  <body>
+    <div class="main-container">
+      <header class="main-header">
+        <h1>Dice Chess 1.0</h1>
+        <p id="connectedClients"></p>
+        <a href="index.html" class="btn">Leave room</a>
+      </header>
+      <main class="main-main">
+        <div class="main-sidebar">
+          <h3>Room Code:</h3>
+          <h2 id="room-name">2k1nC</h2>
+          <h3>Users</h3>
+          <ul id="users">
+            <li>Aman</li>
+            <li>Dinesh</li>
+          </ul>
+        </div>
+        <div class="main-game">
+          <div class="wrapper">
+            <div class="main-board">
+              <div id="myboard" style="width: 60%"></div>
+            </div>
+            <button id="startButton">Start Game</button>
+            <div class="die-container">
+              <div class="dice">
+                <div class="face front"></div>
+                <div class="face back"></div>
+                <div class="face top"></div>
+                <div class="face bottom"></div>
+                <div class="face right"></div>
+                <div class="face left"></div>
+              </div>
+              <button class="roll">Roll Dice</button>
+            </div>
+          </div>
+        </div>
+      </main>
+      <div class="main-game-info">
+        <label><em>Status</em></label>
+        <div class="game-notation">
+          <div id="status"></div>
+        </div>
+        <hr />
+        <label><em>PGN</em></label>
+        <div class="game-notation">
+          <div id="pgn"></div>
+        </div>
+      </div>
+    </div>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.11.0/qs.min.js"
+      integrity="sha512-/l6vieC+YxaZywUhmqs++8uF9DeMvJE61ua5g+UK0TuHZ4TkTgB1Gm1n0NiA86uEOM9JJ6JUwyR0hboKO0fCng=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/boardscript.js"></script>
+  </body>
+</html>
