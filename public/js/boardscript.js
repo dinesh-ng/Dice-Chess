@@ -14,7 +14,7 @@ let validPieceSquares = [];
 let rolledPiece = "";
 
 /**Client Socket IO */
-const socket = io();
+const socket = io("https://dice-chess.onrender.com");
 
 const roomName = document.getElementById("room-name");
 const roomUsers = document.getElementById("users");
