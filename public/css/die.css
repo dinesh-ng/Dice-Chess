@@ -16,7 +16,7 @@
 
 .dice {
   display: block;
-  margin: 50px;
+  margin: 50px auto;
   width: 100px;
   height: 100px;
   transform-style: preserve-3d;
@@ -63,37 +63,37 @@
 
 .front {
   transform: translateZ(50px);
-  background-image: url("../../chess/img/chesspieces/wikipedia/wP.png");
+  background-image: url("/chess/img/chesspieces/wikipedia/wP.png");
   background-position: center;
 }
 
 .back {
   transform: rotateX(180deg) translateZ(50px);
-  background-image: url("../../chess/img/chesspieces/wikipedia/wK.png");
+  background-image: url("/chess/img/chesspieces/wikipedia/wK.png");
   background-position: center;
 }
 
 .top {
   transform: rotateX(90deg) translateZ(50px);
-  background-image: url("../../chess/img/chesspieces/wikipedia/wN.png");
+  background-image: url("/chess/img/chesspieces/wikipedia/wN.png");
   background-position: center;
 }
 
 .bottom {
   transform: rotateX(-90deg) translateZ(50px);
-  background-image: url("../../chess/img/chesspieces/wikipedia/wQ.png");
+  background-image: url("/chess/img/chesspieces/wikipedia/wQ.png");
   background-position: center;
 }
 
 .right {
   transform: rotateY(90deg) translateZ(50px);
-  background-image: url("../../chess/img/chesspieces/wikipedia/wR.png");
+  background-image: url("/chess/img/chesspieces/wikipedia/wR.png");
   background-position: center;
 }
 
 .left {
   transform: rotateY(-90deg) translateZ(50px);
-  background-image: url("../../chess/img/chesspieces/wikipedia/wB.png");
+  background-image: url("/chess/img/chesspieces/wikipedia/wB.png");
   background-position: center;
 }
 
@@ -141,7 +141,8 @@
   margin: 20px auto;
   padding: 6px 12px;
   border-radius: 3px;
-  font: 700 16px "Montserrat";
+  font: 700 16px;
+  font-family: inherit;
   border: 2px solid #b33951;
   transition: 0.4s;
 }
