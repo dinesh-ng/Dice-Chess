@@ -5,12 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dice Chess 1.0</title>
-    <link rel="icon" type="image/x-icon" href="favicon.png?v=2" />
+    <link rel="icon" type="image/x-icon" href="/favicon.png?v=2" />
     <!-- Chessboard CSS -->
-    <link rel="stylesheet" href="chess/css/chessboard-1.0.0.min.css" />
+    <link rel="stylesheet" href="./chess/css/chessboard-1.0.0.min.css" />
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="css/styles.css" />
-    <link rel="stylesheet" href="css/die.css" />
+    <link rel="stylesheet" href="./css/styles.css" />
+    <link rel="stylesheet" href="./css/die.css" />
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -21,16 +21,16 @@
     <!-- jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
     <!-- Chessboard and client chess.js -->
-    <script src="chess/js/chessboard-1.0.0.js"></script>
-    <script src="chess/js/chessboard-1.0.0.min.js"></script>
-    <script src="chess/js/chess.js"></script>
+    <script src="./chess/js/chessboard-1.0.0.js"></script>
+    <script src="./chess/js/chessboard-1.0.0.min.js"></script>
+    <script src="./chess/js/chess.js"></script>
   </head>
   <body>
     <div class="main-container">
       <header class="main-header">
         <h1>Dice Chess 1.0</h1>
         <p id="connectedClients"></p>
-        <a href="index.html" class="btn">Leave room</a>
+        <a href="/index.html" class="btn">Leave room</a>
       </header>
       <main class="main-main">
         <div class="main-sidebar">
@@ -77,7 +77,7 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     ></script>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="js/boardscript.js"></script>
+    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script src="./js/boardscript.js"></script>
   </body>
 </html>
