@@ -14,7 +14,12 @@ let validPieceSquares = [];
 let rolledPiece = "";
 
 /**Client Socket IO */
-const socket = io("http://localhost:3000");
+const socket = io("http://localhost:3000", {
+  reconnection: true,
+  reconnectionDelay: 1000,
+  reconnectionDelayMax: 5000,
+  reconnectionAttempts: Infinity,
+});
 
 const roomName = document.getElementById("room-name");
 const roomUsers = document.getElementById("users");
